@@ -67,14 +67,14 @@ class AppVM: ViewModel() {
 
 class VariablesVM: ViewModel() {
     val id = mutableStateOf(0)
-    val placeVisited = mutableStateOf("")
+    val lugar = mutableStateOf("")
     val photo = mutableStateOf<Bitmap?>(null)
-    val lat = mutableStateOf(0.0);
-    val lon = mutableStateOf(0.0);
-    val order = mutableStateOf(0)
-    val price = mutableStateOf(0.0)
-    val movePrice = mutableStateOf(0.0)
-    val comments = mutableStateOf("")
+    val latitud = mutableStateOf(0.0);
+    val lonngitud = mutableStateOf(0.0);
+    val orden = mutableStateOf(0)
+    val alojamiento = mutableStateOf(0.0)
+    val traslado = mutableStateOf(0.0)
+    val commentarios = mutableStateOf("")
     val dolar = mutableStateOf(0.0)
 }
 class MainActivity : ComponentActivity() {
@@ -107,7 +107,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 
 @Composable
 fun AppUI(
