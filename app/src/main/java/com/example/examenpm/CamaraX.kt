@@ -46,7 +46,7 @@ fun CamaraUI(cameraController: LifecycleCameraController, permissionLauncher: Ac
         onClick = {
             takePhoto(
                 cameraController = cameraController,
-                file = makePrivatePhotoFile(context),
+                file = makePublicPhotoFile(context),
                 context = context)
             {
                 routineScope.launch(Dispatchers.IO){
@@ -93,7 +93,7 @@ fun takePhoto(
     )
 }
 
-fun makePrivatePhotoFile(context: Context): File = File(
+fun makePublicPhotoFile(context: Context): File = File(
     context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
     "${System.currentTimeMillis()}.jpg"
 )

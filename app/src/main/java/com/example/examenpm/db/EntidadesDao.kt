@@ -39,7 +39,6 @@ interface EntidadesDao {
         traslado: Double,
         comentarios: String
     )
-
     @Query("UPDATE Entidades SET longitud = :longitud, latitud = :latitud WHERE id = :id")
     fun actualizarLocacion(id: Int, longitud: Double, latitud: Double)
 

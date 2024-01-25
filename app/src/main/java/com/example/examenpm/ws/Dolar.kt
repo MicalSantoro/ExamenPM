@@ -3,7 +3,6 @@ package com.example.examenpm.ws
 
 import com.squareup.moshi.Json
 
-
 data class Dolar(
     @Json(name = "codigo")
     val codigo: String,
@@ -17,8 +16,6 @@ data class Dolar(
     @Json(name = "serie")
     val serie: List<SerieItem>
 )
-
-
 data class SerieItem(
     @Json(name = "fecha")
     val fecha: String,
