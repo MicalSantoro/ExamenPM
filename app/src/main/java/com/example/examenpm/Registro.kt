@@ -35,7 +35,7 @@ import java.math.RoundingMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun addPlace(appVM: AppVM, formVM: FormVM) {
+fun Registrar(appVM: AppVM, variablesVM: VariablesVM) {
 
 
     val routineScope = rememberCoroutineScope()
@@ -48,7 +48,7 @@ fun addPlace(appVM: AppVM, formVM: FormVM) {
                 val response = service.getDolar()
                 Log.d("Respuesta de la API", response.toString())
                 val jsonString = response.toString()
-                formVM.dolar.value = response.serie[0].valor
+                variablesVM.dolar.value = response.serie[0].valor
                 Log.d("JSON de respuesta", jsonString)
                 Log.d("Valor del dolar", response.serie[0].valor.toString())
             } catch (e: Exception) {
@@ -63,7 +63,7 @@ fun addPlace(appVM: AppVM, formVM: FormVM) {
     var alojamiento by remember { mutableStateOf("") }
     var traslado by remember { mutableStateOf("") }
     var comentarios by remember { mutableStateOf("") }
-    var lat by remember { mutableStateOf("") }
+    var latitud by remember { mutableStateOf("") }
     var lon by remember { mutableStateOf("") }
 
 
@@ -104,7 +104,7 @@ fun addPlace(appVM: AppVM, formVM: FormVM) {
         )
 
         Spacer(modifier = Modifier.padding(16.dp))
-        Text(text = "Costo Movilización")
+        Text(text = "Costo Traslados")
 
         OutlinedTextField(
             value = traslado,
@@ -135,8 +135,8 @@ fun addPlace(appVM: AppVM, formVM: FormVM) {
                     null,
                     null,
                     orden.toInt(),
-                    BigDecimal(alojamiento.toDouble()/formVM.dolar.value).setScale(2, RoundingMode.HALF_EVEN).toDouble(),
-                    BigDecimal(traslado.toDouble()/formVM.dolar.value).setScale(2, RoundingMode.HALF_EVEN).toDouble(),
+                    BigDecimal(alojamiento.toDouble()/variablesVM.dolar.value).setScale(2, RoundingMode.HALF_EVEN).toDouble(),
+                    BigDecimal(traslado.toDouble()/variablesVM.dolar.value).setScale(2, RoundingMode.HALF_EVEN).toDouble(),
                     comentarios
                 )
                 dao.insertar(newPlace)
@@ -156,7 +156,7 @@ fun addPlace(appVM: AppVM, formVM: FormVM) {
             Text(text = "Guardar")
         }
         Spacer(modifier =   Modifier.padding(16.dp))
-        Button(onClick = { appVM.currentScreen.value = Screen.MAIN}) {
+        Button(onClick = { appVM.pantallaActual.value = Pantallas.MAIN}) {
             Text(text = "Volver")
         }
     }

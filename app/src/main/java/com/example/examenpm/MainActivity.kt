@@ -12,7 +12,6 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,7 +51,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-enum class Screen {
+enum class Pantallas {
     MAIN,
     CAMARA,
     MAPA,
@@ -61,12 +60,12 @@ enum class Screen {
    // VERREGISTRO
 }
 class AppVM: ViewModel() {
-    val currentScreen = mutableStateOf(Screen.MAIN)
-    val onCameraPermissionOk:() -> Unit = {}
-    var locationPermissionOk:() -> Unit = {}
+    val pantallaActual = mutableStateOf(Pantallas.MAIN)
+    val permisoCamara:() -> Unit = {}
+    var permisoUbicacion:() -> Unit = {}
 }
 
-class FormVM: ViewModel() {
+class VariablesVM: ViewModel() {
     val id = mutableStateOf(0)
     val placeVisited = mutableStateOf("")
     val photo = mutableStateOf<Bitmap?>(null)
@@ -89,9 +88,9 @@ class MainActivity : ComponentActivity() {
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) {
-        appVM.locationPermissionOk()
+        appVM.permisoUbicacion()
         if(it[android.Manifest.permission.CAMERA] == true) {
-            cameraVm.onCameraPermissionOk()
+            cameraVm.permisoCamara()
         }
     }
 
@@ -104,7 +103,7 @@ class MainActivity : ComponentActivity() {
         cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
         setContent {
-            AppUI(permissionLauncher = permissionLauncher, cameraController = cameraController, appVM = appVM, formVM = FormVM())
+            AppUI(permissionLauncher = permissionLauncher, cameraController = cameraController, appVM = appVM, variablesVM = VariablesVM())
         }
     }
 }
@@ -115,24 +114,24 @@ fun AppUI(
     permissionLauncher: ActivityResultLauncher<Array<String>>,
     cameraController: LifecycleCameraController,
     appVM: AppVM,
-    formVM: FormVM
+    variablesVM: VariablesVM
 ) {
 
-    when(appVM.currentScreen.value) {
-        Screen.MAIN -> {
-            listPlacesUI(appVM = appVM, formVM = formVM)
+    when(appVM.pantallaActual.value) {
+        Pantallas.MAIN -> {
+            MostrarRegistroUI(appVM = appVM, variablesVM = variablesVM)
         }
-        Screen.CAMARA -> {
-            CamaraUI(permissionLauncher = permissionLauncher, cameraController = cameraController, appVM = appVM, formVM = formVM)
+        Pantallas.CAMARA -> {
+            CamaraUI(permissionLauncher = permissionLauncher, cameraController = cameraController, appVM = appVM, variablesVM = variablesVM)
         }
-        Screen.MAPA-> {
-            MapUI(appVM = appVM, formVM = formVM, permissionLauncher = permissionLauncher)
+        Pantallas.MAPA-> {
+            MapaUI(appVM = appVM, variablesVM = variablesVM, permissionLauncher = permissionLauncher)
         }
-        Screen.REGISTRO -> {
-            addPlace(formVM = formVM , appVM = appVM)
+        Pantallas.REGISTRO -> {
+            Registrar(variablesVM = variablesVM, appVM = appVM)
         }
-        Screen.EDITARREGISTRO -> {
-            ModifyPlace(formVM = formVM, appVM = appVM)
+        Pantallas.EDITARREGISTRO -> {
+            EditarRegistro(variablesVM = variablesVM, appVM = appVM)
         }
     }
 
@@ -141,8 +140,8 @@ fun AppUI(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun listPlacesUI(appVM: AppVM,
-                 formVM: FormVM,
+fun MostrarRegistroUI(appVM: AppVM,
+                 variablesVM: VariablesVM,
 ) {
     val (places, setplaces) = remember { mutableStateOf(emptyList<Entidades>())}
     val context = LocalContext.current
@@ -159,7 +158,7 @@ fun listPlacesUI(appVM: AppVM,
         modifier = Modifier.fillMaxSize(),
     ) {
         items(places) { place ->
-            PlaceItem(place, appVM = appVM,formVM) {
+            PlaceItem(place, appVM = appVM,variablesVM) {
                 setplaces(emptyList<Entidades>())
             }
 
@@ -175,7 +174,7 @@ fun listPlacesUI(appVM: AppVM,
             .padding(16.dp),
         contentAlignment  = Alignment.BottomEnd
     ) {
-        Button(onClick = { appVM.currentScreen.value = Screen.REGISTRO }) {
+        Button(onClick = { appVM.pantallaActual.value = Pantallas.REGISTRO }) {
             Text(text = "Agregar Lugar")
         }
     }
@@ -199,7 +198,7 @@ fun listPlacesUI(appVM: AppVM,
 
 
 @Composable
-fun PlaceItem(place: Entidades, appVM: AppVM,formVM: FormVM, onSave:() -> Unit = {}) {
+fun PlaceItem(place: Entidades, appVM: AppVM,variablesVM: VariablesVM, onSave:() -> Unit = {}) {
     val routineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -216,7 +215,7 @@ fun PlaceItem(place: Entidades, appVM: AppVM,formVM: FormVM, onSave:() -> Unit =
                 modifier = Modifier
                     .size(150.dp)
                     .padding(end = 16.dp)
-                    .clickable { appVM.currentScreen.value = Screen.CAMARA }
+                    .clickable { appVM.pantallaActual.value = Pantallas.CAMARA }
             )
         } ?: Image(
             painter = painterResource(id = R.drawable.camara),
@@ -225,8 +224,8 @@ fun PlaceItem(place: Entidades, appVM: AppVM,formVM: FormVM, onSave:() -> Unit =
                 .size(150.dp)
                 .padding(end = 16.dp)
                 .clickable {
-                    formVM.id.value = place.id
-                    appVM.currentScreen.value = Screen.CAMARA
+                    variablesVM.id.value = place.id
+                    appVM.pantallaActual.value = Pantallas.CAMARA
                 }
         )
         Column(
@@ -247,14 +246,14 @@ fun PlaceItem(place: Entidades, appVM: AppVM,formVM: FormVM, onSave:() -> Unit =
                 })
                 Spacer(modifier = Modifier.size(10.dp))
                 Icon(Icons.TwoTone.Create, contentDescription = "Modify", Modifier.clickable {
-                    formVM.id.value = place.id
-                    appVM.currentScreen.value = Screen.EDITARREGISTRO
+                    variablesVM.id.value = place.id
+                    appVM.pantallaActual.value = Pantallas.EDITARREGISTRO
                 }
                 )
                 Spacer(modifier = Modifier.size(10.dp))
                 Icon(Icons.TwoTone.Place, contentDescription = "Location", Modifier.clickable {
-                    formVM.id.value = place.id
-                    appVM.currentScreen.value = Screen.MAPA
+                    variablesVM.id.value = place.id
+                    appVM.pantallaActual.value = Pantallas.MAPA
                 })
             }
 

@@ -30,7 +30,7 @@ import java.io.File
 
 @Composable
 fun CamaraUI(cameraController: LifecycleCameraController, permissionLauncher: ActivityResultLauncher<Array<String>>,
-             appVM: AppVM, formVM: FormVM
+             appVM: AppVM, variablesVM: VariablesVM
 ) {
     permissionLauncher.launch(arrayOf(android.Manifest.permission.CAMERA))
 
@@ -51,10 +51,10 @@ fun CamaraUI(cameraController: LifecycleCameraController, permissionLauncher: Ac
             {
                 routineScope.launch(Dispatchers.IO){
                     val dao = AppDb.getInstace(context).EntidadesDao()
-                    formVM.photo.value = it
-                    dao.actualizarImagen(formVM.id.value, it)
+                    variablesVM.photo.value = it
+                    dao.actualizarImagen(variablesVM.id.value, it)
                 }
-                appVM.currentScreen.value = Screen.MAIN
+                appVM.pantallaActual.value = Pantallas.MAIN
             }
         },
         modifier = Modifier

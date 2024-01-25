@@ -36,7 +36,7 @@ import java.math.RoundingMode
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun ModifyPlace(appVM: AppVM, formVM: FormVM) {
+fun EditarRegistro(appVM: AppVM, variablesVM: VariablesVM) {
 
     val routineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -48,7 +48,7 @@ fun ModifyPlace(appVM: AppVM, formVM: FormVM) {
                 val response = service.getDolar()
                 Log.d("Respuesta de la API", response.toString())
                 val jsonString = response.toString()
-                formVM.dolar.value = response.serie[0].valor
+                variablesVM.dolar.value = response.serie[0].valor
                 Log.d("JSON de respuesta", jsonString)
                 Log.d("Valor del dolar", response.serie[0].valor.toString())
             } catch (e: Exception) {
@@ -128,11 +128,11 @@ fun ModifyPlace(appVM: AppVM, formVM: FormVM) {
             routineScope.launch(Dispatchers.IO) {
                 val dao = AppDb.getInstace(context).EntidadesDao()
                 dao.actualizarLugar(
-                    formVM.id.value,
+                    variablesVM.id.value,
                     lugar,
                     orden.toInt(),
-                    BigDecimal(alojamiento.toDouble()/formVM.dolar.value).setScale(2, RoundingMode.HALF_EVEN).toDouble(),
-                    BigDecimal(traslado.toDouble()/formVM.dolar.value).setScale(2, RoundingMode.HALF_EVEN).toDouble(),
+                    BigDecimal(alojamiento.toDouble()/variablesVM.dolar.value).setScale(2, RoundingMode.HALF_EVEN).toDouble(),
+                    BigDecimal(traslado.toDouble()/variablesVM.dolar.value).setScale(2, RoundingMode.HALF_EVEN).toDouble(),
                     comentarios)
 
                 withContext(Dispatchers.Main) {
@@ -145,13 +145,13 @@ fun ModifyPlace(appVM: AppVM, formVM: FormVM) {
                 traslado = ""
                 comentarios = ""
 
-                appVM.currentScreen.value = Screen.MAIN
+                appVM.pantallaActual.value = Pantallas.MAIN
             }
         }) {
             Text(text = "Modificar")
         }
         Spacer(modifier =   Modifier.padding(16.dp))
-        Button(onClick = { appVM.currentScreen.value = Screen.MAIN}) {
+        Button(onClick = { appVM.pantallaActual.value = Pantallas.MAIN}) {
             Text(text = "Volver")
         }
 

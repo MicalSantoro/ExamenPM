@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
@@ -39,25 +41,33 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapUI(appVM: AppVM, formVM: FormVM, permissionLauncher: ActivityResultLauncher<Array<String>>) {
+fun MapaUI(appVM: AppVM, variablesVM: VariablesVM, permissionLauncher: ActivityResultLauncher<Array<String>>) {
     val routineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    var lonText by remember { mutableStateOf("") }
+    var longText by remember { mutableStateOf("") }
     var latText by remember { mutableStateOf("") }
 
-    val lon = lonText.toDoubleOrNull() ?: 0.0
-    val lat = latText.toDoubleOrNull() ?: 0.0
+    val longitud = longText.toDoubleOrNull() ?: 0.0
+    val latitud = latText.toDoubleOrNull() ?: 0.0
 
-    Column {
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+
 
         permissionLauncher.launch(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION))
         OutlinedTextField(
-            value = lonText,
+            value = longText,
             onValueChange = {
-                if (it.matches(Regex("^-?\\d*\\.?\\d*$")) || it.isEmpty()) {
-                    lonText = it
+                if (it.matches(Regex("")) || it.isEmpty()) {
+                    longText = it
                 }
             },
             label = { Text(text = "Longitud") },
@@ -67,7 +77,7 @@ fun MapUI(appVM: AppVM, formVM: FormVM, permissionLauncher: ActivityResultLaunch
         OutlinedTextField(
             value = latText,
             onValueChange = {
-                if (it.matches(Regex("^-?\\d*\\.?\\d*$")) || it.isEmpty()) {
+                if (it.matches(Regex("")) || it.isEmpty()) {
                     latText = it
                 }
             },
@@ -78,7 +88,7 @@ fun MapUI(appVM: AppVM, formVM: FormVM, permissionLauncher: ActivityResultLaunch
         Button(onClick = {
 
             routineScope.launch(Dispatchers.IO) {
-                AppDb.getInstace(context).EntidadesDao().actualizarLocacion(formVM.id.value, lat, lon)
+                AppDb.getInstace(context).EntidadesDao().actualizarLocacion(variablesVM.id.value, latitud, longitud)
 
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Lugar agregado", Toast.LENGTH_SHORT).show()
@@ -86,11 +96,12 @@ fun MapUI(appVM: AppVM, formVM: FormVM, permissionLauncher: ActivityResultLaunch
             }
 
         }) {
-            Text(text = "Guardar estas coordenadas al lugar")
+            Text(text = "Agregar coordenadas")
         }
-        Text(text = "Lat: $lat Lon: $lon")
+        Text(text = "Latitud: $latitud " +
+                "Longitud: $longitud")
         Spacer(modifier = Modifier.height(20.dp))
-        Button(onClick = { appVM.currentScreen.value = Screen.MAIN}) {
+        Button(onClick = { appVM.pantallaActual.value = Pantallas.MAIN}) {
             Text(text = "Volver")
         }
         Spacer(modifier = Modifier.height(200.dp))
@@ -104,7 +115,7 @@ fun MapUI(appVM: AppVM, formVM: FormVM, permissionLauncher: ActivityResultLaunch
 
             it.overlays.removeIf { true }
             it.invalidate()
-            val geoPoint = GeoPoint(lat, lon)
+            val geoPoint = GeoPoint(latitud, longitud)
             it.controller.animateTo(geoPoint)
 
             val marcador = Marker(it)
