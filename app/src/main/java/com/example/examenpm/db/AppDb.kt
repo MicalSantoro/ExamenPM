@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(entities = [Entidades::class], version = 1)
-@TypeConverters(Conversor::class)
+@TypeConverters(ConversorImg::class)
 abstract class AppDb : RoomDatabase() {
     abstract fun EntidadesDao(): EntidadesDao
 

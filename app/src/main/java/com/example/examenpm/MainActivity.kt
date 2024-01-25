@@ -57,7 +57,7 @@ enum class Pantallas {
     MAPA,
     REGISTRO,
     EDITARREGISTRO,
-   // VERREGISTRO
+   //VERREGISTRO
 }
 class AppVM: ViewModel() {
     val pantallaActual = mutableStateOf(Pantallas.MAIN)
@@ -237,24 +237,23 @@ fun PlaceItem(place: Entidades, appVM: AppVM,variablesVM: VariablesVM, onSave:()
             Text(text = "Traslado: $" + place.traslado.toString() + " USD")
             Text(text = "Lat: " + place.latitud.toString() + " Lon: " + place.longitud.toString())
             Row {
-                Icon(Icons.TwoTone.Delete, contentDescription = "Delete", Modifier.clickable {
-                    routineScope.launch(Dispatchers.IO) {
-                        val dao = AppDb.getInstace(context).EntidadesDao()
-                        dao.eliminar(place)
-                        onSave()
-                    }
-                })
-                Spacer(modifier = Modifier.size(10.dp))
                 Icon(Icons.TwoTone.Create, contentDescription = "Modify", Modifier.clickable {
                     variablesVM.id.value = place.id
                     appVM.pantallaActual.value = Pantallas.EDITARREGISTRO
-                }
-                )
+                })
                 Spacer(modifier = Modifier.size(10.dp))
                 Icon(Icons.TwoTone.Place, contentDescription = "Location", Modifier.clickable {
                     variablesVM.id.value = place.id
                     appVM.pantallaActual.value = Pantallas.MAPA
                 })
+                Spacer(modifier = Modifier.size(10.dp))
+                Icon(Icons.TwoTone.Delete, contentDescription = "Delete", Modifier.clickable {
+                    routineScope.launch(Dispatchers.IO) {
+                        val dao = AppDb.getInstace(context).EntidadesDao()
+                        dao.eliminar(place)
+                        onSave()
+                    } })
+
             }
 
         }

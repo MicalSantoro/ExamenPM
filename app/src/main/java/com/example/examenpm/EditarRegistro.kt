@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -52,7 +53,6 @@ fun EditarRegistro(appVM: AppVM, variablesVM: VariablesVM) {
                 Log.d("JSON de respuesta", jsonString)
                 Log.d("Valor del dolar", response.serie[0].valor.toString())
             } catch (e: Exception) {
-                // Manejar el error
                 Log.e("Error en la llamada API", e.toString())
             }
         }
@@ -67,11 +67,12 @@ fun EditarRegistro(appVM: AppVM, variablesVM: VariablesVM) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "MODIFICAR LUGAR")
-        Spacer(modifier = Modifier.padding(16.dp))
+        Text(text = "MODIFICAR DATOS",
+            style = MaterialTheme.typography.titleLarge)
+        Spacer(modifier = Modifier.padding(20.dp))
         Text(text = "Lugar")
 
         OutlinedTextField(
@@ -83,7 +84,7 @@ fun EditarRegistro(appVM: AppVM, variablesVM: VariablesVM) {
 
         )
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.padding(15.dp))
         Text(text = "Orden")
 
         OutlinedTextField(
@@ -93,8 +94,8 @@ fun EditarRegistro(appVM: AppVM, variablesVM: VariablesVM) {
         )
 
 
-        Spacer(modifier = Modifier.padding(16.dp))
-        Text(text = "Alojamiento")
+        Spacer(modifier = Modifier.padding(15.dp))
+        Text(text = "Costo Alojamiento")
 
         OutlinedTextField(
             value = alojamiento,
@@ -102,8 +103,8 @@ fun EditarRegistro(appVM: AppVM, variablesVM: VariablesVM) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number).copy(imeAction = ImeAction.Done)
         )
 
-        Spacer(modifier = Modifier.padding(16.dp))
-        Text(text = "Costo Movilización")
+        Spacer(modifier = Modifier.padding(15.dp))
+        Text(text = "Costo Transporte")
 
         OutlinedTextField(
             value = traslado,
@@ -111,7 +112,7 @@ fun EditarRegistro(appVM: AppVM, variablesVM: VariablesVM) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number).copy(imeAction = ImeAction.Done)
         )
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.padding(15.dp))
         Text(text = "Comentarios")
 
         OutlinedTextField(
@@ -122,7 +123,7 @@ fun EditarRegistro(appVM: AppVM, variablesVM: VariablesVM) {
             )
         )
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.padding(15.dp))
 
         Button(onClick = {
             routineScope.launch(Dispatchers.IO) {
@@ -150,9 +151,9 @@ fun EditarRegistro(appVM: AppVM, variablesVM: VariablesVM) {
         }) {
             Text(text = "Modificar")
         }
-        Spacer(modifier =   Modifier.padding(16.dp))
+        Spacer(modifier =   Modifier.padding(15.dp))
         Button(onClick = { appVM.pantallaActual.value = Pantallas.MAIN}) {
-            Text(text = "Volver")
+            Text(text = "Regresar")
         }
 
     }

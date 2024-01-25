@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -70,9 +71,13 @@ fun Registrar(appVM: AppVM, variablesVM: VariablesVM) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(text = "AGREGAR DATOS",
+            style = MaterialTheme.typography.titleLarge
+            )
+        Spacer(modifier = Modifier.padding(15.dp))
         Text(text = "Lugar")
 
         OutlinedTextField(
@@ -84,7 +89,7 @@ fun Registrar(appVM: AppVM, variablesVM: VariablesVM) {
 
         )
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.padding(15.dp))
         Text(text = "Orden")
 
         OutlinedTextField(
@@ -94,7 +99,7 @@ fun Registrar(appVM: AppVM, variablesVM: VariablesVM) {
         )
 
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.padding(15.dp))
         Text(text = "Costo Alojamiento")
 
         OutlinedTextField(
@@ -103,7 +108,7 @@ fun Registrar(appVM: AppVM, variablesVM: VariablesVM) {
             keyboardOptions = KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number).copy(imeAction = ImeAction.Done)
         )
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.padding(15.dp))
         Text(text = "Costo Traslados")
 
         OutlinedTextField(
@@ -112,7 +117,7 @@ fun Registrar(appVM: AppVM, variablesVM: VariablesVM) {
             keyboardOptions = KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number).copy(imeAction = ImeAction.Done)
         )
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.padding(15.dp))
         Text(text = "Comentarios")
 
         OutlinedTextField(
@@ -123,7 +128,7 @@ fun Registrar(appVM: AppVM, variablesVM: VariablesVM) {
             )
         )
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.padding(15.dp))
 
         Button(onClick = {
             routineScope.launch(Dispatchers.IO) {
@@ -155,9 +160,9 @@ fun Registrar(appVM: AppVM, variablesVM: VariablesVM) {
         }) {
             Text(text = "Guardar")
         }
-        Spacer(modifier =   Modifier.padding(16.dp))
+        Spacer(modifier =   Modifier.padding(15.dp))
         Button(onClick = { appVM.pantallaActual.value = Pantallas.MAIN}) {
-            Text(text = "Volver")
+            Text(text = "Regresar")
         }
     }
 }
